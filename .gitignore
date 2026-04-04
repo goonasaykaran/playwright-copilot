@@ -1,0 +1,20 @@
+# credentials — never commit
+config.json
+
+# browser sessions
+browser_profile/
+
+# uploads
+uploads/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.venv-linux/
+
+# IDE
+.idea/
+
+# debug artifacts
+debug_headless.png
