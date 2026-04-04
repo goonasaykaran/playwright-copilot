@@ -10,8 +10,11 @@ uploads/
 # python
 __pycache__/
 *.pyc
-.venv/
-.venv-linux/
+
+# broken symlinks in linux venv (recreated automatically by venv)
+.venv-linux/bin/python
+.venv-linux/bin/python3
+.venv-linux/bin/python3.12
 
 # IDE
 .idea/
