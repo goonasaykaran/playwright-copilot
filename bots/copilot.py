@@ -26,16 +26,17 @@ class CopilotBot(BaseBot):
 
     def __init__(self, model: str = "balanced", headless: bool = True,
                  user_data_dir: str = "./browser_profile/copilot"):
-        super().__init__(headless=headless, user_data_dir=user_data_dir)
+        # Use Edge for Copilot — Microsoft's Cloudflare is less aggressive towards Edge
+        super().__init__(headless=headless, user_data_dir=user_data_dir, channel="msedge")
         self.model = model if model in self.TONE_MAP else self.DEFAULT_MODEL
 
     async def navigate_to_chat(self):
         await self._page.goto(self.CHAT_URL, wait_until="domcontentloaded")
-        # Wait for the chat input
+        # Wait for the chat input (long timeout to allow CAPTCHA / login challenges)
         try:
             await self._page.wait_for_selector(
                 "textarea[placeholder], div[contenteditable='true']",
-                timeout=20000
+                timeout=120000
             )
         except Exception:
             raise RuntimeError(

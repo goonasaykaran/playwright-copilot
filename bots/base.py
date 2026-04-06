@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from playwright.async_api import async_playwright, Browser, BrowserContext, Page
+from rebrowser_playwright.async_api import async_playwright, Browser, BrowserContext, Page
 from playwright_stealth import Stealth
 from pathlib import Path
 import asyncio
@@ -11,9 +11,11 @@ class BaseBot(ABC):
     Extend this to add support for any new AI platform (Gemini, Claude Web, etc.)
     """
 
-    def __init__(self, headless: bool = True, user_data_dir: str = "./browser_profile"):
+    def __init__(self, headless: bool = True, user_data_dir: str = "./browser_profile",
+                 channel: str = "chrome"):
         self.headless = headless
         self.user_data_dir = user_data_dir  # Persistent profile so login is remembered
+        self.channel = channel
         self._playwright = None
         self._browser: Browser = None
         self._context: BrowserContext = None
@@ -26,7 +28,7 @@ class BaseBot(ABC):
         self._context = await self._playwright.chromium.launch_persistent_context(
             user_data_dir=self.user_data_dir,
             headless=self.headless,
-            channel="chrome",  # use real Chrome to bypass Cloudflare bot detection
+            channel=self.channel,
             args=["--disable-blink-features=AutomationControlled"],
             no_viewport=False,
             viewport={"width": 1280, "height": 900},
