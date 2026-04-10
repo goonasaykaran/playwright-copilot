@@ -33,7 +33,12 @@ class BaseBot(ABC):
             no_viewport=False,
             viewport={"width": 1280, "height": 900},
         )
-        self._page = await self._context.new_page()
+        # launch_persistent_context already opens one page — reuse it instead of
+        # calling new_page() which can trigger TargetClosedError on some systems.
+        if self._context.pages:
+            self._page = self._context.pages[0]
+        else:
+            self._page = await self._context.new_page()
         await Stealth().apply_stealth_async(self._page)
 
     async def stop(self):
